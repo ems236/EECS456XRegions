@@ -19,15 +19,16 @@ class RegionProvider:
         local_regions = self.local_regions_for(xcoord, ycoord, profile, neigboring_regions)
         #create usermatrix
         user_matrix = self.user_matrix(profile, local_regions)
-        user_matrix.print()
+        #user_matrix.print()
         #calculate ev distribute
-        print("\n")
+        #print("\n")
         ev_matrix = self.ev_matrix(user_matrix)
-        ev_matrix.print()
-        ayy = "lmao"
+        #ev_matrix.print()
         #run the algorithm
-        pass
-    
+        #user_gridRegion = self.agressive_weighted_expansion_region(user_matrix, ev_matrix)
+        
+        #convert grid space back to euclid
+
     def local_regions_for(self, xcoord, ycoord, profile, neigboring_regions):
         local_regions = [region.to_grid_region(xcoord, ycoord) for region in neigboring_regions]
         #remove regions with no overlap
@@ -56,7 +57,7 @@ class RegionProvider:
             #can assume all regions are at least partially in bounds
             for x in range(max(-1 * end_coord, region.x_min), min(end_coord + 1, region.x_max + 1)):
                 for y in range(max(-1 * end_coord, region.y_min), min(end_coord + 1, region.y_max + 1)):
-                    newval = matrix.value_at(x, y) + (1 / current_size)
+                    newval = matrix.value_at(x, y) + (100 / current_size)
                     matrix.set_at(x, y, newval)
 
         return matrix
@@ -73,6 +74,7 @@ class RegionProvider:
         return ev_matrix
 
     def manhattan_distance(self, x, y):
+        #reconstructing some examples in the paper, they subtract 2.
         return (abs(x) + abs(y))**2 
 
     def container_bounds(self, val, end_coord):
@@ -94,7 +96,10 @@ class RegionProvider:
 
         for x_diag in range(start_x, end_x + 1):
             for y_diag in range(start_y, end_y + 1):
-                new_region = GridRegion(x, y, x_diag, y_diag)
-                sum += (user_matrix.value_at(x_diag, y_diag) / self.region_privacy_area_func(new_region, self.world_map))
+                new_region = GridRegion(0, 0, x_diag, y_diag)
+                area = self.region_privacy_area_func(new_region, self.world_map)
+                val = user_matrix.value_at(x_diag, y_diag)
+                sum += val / area
 
-        return self.manhattan_distance(x, y) * sum
+        dist = self.manhattan_distance(x, y)
+        return dist * sum

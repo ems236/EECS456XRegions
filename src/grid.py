@@ -18,7 +18,7 @@ class Grid:
         for row in range(0, self.size):
             toprint = "["
             for col in range(0, self.size):
-                toprint = f"{toprint} {self.data[self.size - row - 1][col]))}"
+                toprint = f'{toprint} {self.data[self.size - row - 1][col]:3.1f}'
             toprint = toprint + "]"
             print(toprint)
         
