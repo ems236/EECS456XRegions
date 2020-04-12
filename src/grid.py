@@ -8,6 +8,11 @@ class Grid:
         self.validate_dimension(x)
         self.validate_dimension(y)
         return self.data[self.convert_val(x), self.convert_val(y)]
+
+    def set_at(self, x, y, val):
+        self.validate_dimension(x)
+        self.validate_dimension(y)
+        self.data[self.convert_val(x), self.convert_val(y)] = val
         
     def convert_val(self, val):
         return val + (self.size // 2)

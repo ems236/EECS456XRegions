@@ -1,4 +1,5 @@
 from random import triangular, uniform
+from math import floor, ceil
 
 MIN_SIDE_LENGTH = 2.0
 
@@ -25,5 +26,5 @@ class Region:
         return Region(xmin, ymin, xmin + width, ymin + height)
 
     @staticmethod
-    def copy_with_local_coordinates(origin_x, origin_y, region:Region):
-        return Region(region.x1 - origin_x, region.y1 - origin_y, region.x2 - origin_x, region.y2 - origin_y)
+    def discretized_coordinates_of(origin_x, origin_y, region:Region):
+        return Region(floor(region.x1 - origin_x), floor(region.y1 - origin_y), ceil(region.x2 - origin_x), floor(region.y2 - origin_y))
