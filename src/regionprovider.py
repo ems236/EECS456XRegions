@@ -31,7 +31,7 @@ class RegionProvider:
         #calculate ev distribute
         #print("\n")
         ev_matrix = self.ev_matrix_builder.ev_matrix(user_matrix)
-        #ev_matrix.print()
+        ev_matrix.print()
         #run the algorithm
         user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, profile)
         #convert grid space back to euclidean space

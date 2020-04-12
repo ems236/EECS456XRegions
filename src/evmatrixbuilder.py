@@ -28,7 +28,10 @@ class EVMatrixBuilder:
     def container_bounds(self, val, end_coord):
         start:int 
         end:int
-        if val >= 0:
+        if val == 0:
+            start = -1 * end_coord
+            end = end_coord
+        elif val > 0:
             start = val
             end = end_coord
         else:

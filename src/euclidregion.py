@@ -24,6 +24,14 @@ class EuclidRegion:
             ceil(self.y_max - origin_y - 0.5))
 
     @staticmethod
+    def from_grid_region(gridregion:GridRegion, world_x, world_y):
+        return EuclidRegion(
+            gridregion.x_min + world_x - 0.5,
+            gridregion.y_min + world_y - 0.5,
+            gridregion.x_max + world_x + 0.5,
+            gridregion.y_max + world_y + 0.5)
+
+    @staticmethod
     def random_region(xcoord, ycoord, max_size):
         height = triangular(MIN_SIDE_LENGTH, max_size / MIN_SIDE_LENGTH)
         width = max_size / height
