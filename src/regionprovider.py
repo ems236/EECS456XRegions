@@ -35,6 +35,6 @@ class RegionProvider:
         #run the algorithm
         user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, profile)
         #convert grid space back to euclidean space
-        return user_grid_region.to_euclidean(xcoord, ycoord)
+        return EuclidRegion.from_grid_region(user_grid_region, xcoord, ycoord)
 
     

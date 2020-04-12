@@ -26,17 +26,20 @@ class BaseRegionExpansionRunner:
             direction = self.expansion_direction_for(expansion_values)
 
             new_region = self.expanded_direction(current_region, direction)
+            new_area = self.region_privacy_area_func(new_region, self.world_map)
 
-            if current_area < profile.min_size or self.should_expand(current_region, new_region, profile, user_matrix):
+            if (not (new_area > profile.max_size) 
+                and (current_area < profile.min_size or self.should_expand(current_region, new_region, profile, user_matrix))
+            ):
                 current_region = new_region
-                current_area = self.region_privacy_area_func(current_region, self.world_map)
+                current_area = new_area
             else:
                 return current_region
         
         return current_region
 
     def expansion_direction_for(self, expansion_values):
-        vals = expansion_values.sorted(key = lambda kv: kv[1], reverse=True)
+        vals = sorted(expansion_values, key = lambda kv: kv[1], reverse=True)
         #probability distribution goes here in derived class
         return vals[0][0]
 
@@ -51,7 +54,7 @@ class BaseRegionExpansionRunner:
         elif direction == RIGHT:
             return self.sum_grid_line(grid, region.x_max + 1, region.x_max + 1, region.y_min, region.y_max)
         elif direction == DOWN:
-            return self.sum_grid_line(grid, region.x_min, region.x_max, region.y_min - 1, region.y_min + 1)
+            return self.sum_grid_line(grid, region.x_min, region.x_max, region.y_min - 1, region.y_min - 1)
 
         return 0
 
