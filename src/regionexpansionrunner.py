@@ -37,6 +37,7 @@ class BaseRegionExpansionRunner:
                 break
         
         current_region.privacy = self.k_anonymity_of(current_region, user_matrix)
+        current_region.calculate_boundary_stats()
         return current_region
 
     def expansion_direction_for(self, expansion_values):

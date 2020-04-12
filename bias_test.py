@@ -24,5 +24,9 @@ for _ in range(0, USER_COUNT):
 user:User
 for user in world.users:
     user.update_region()
+    region:EuclidRegion
     region = user.current_region()
-    print(f"privacy: {region.privacy} size: {region.area()} location:({user.xcoord}, {user.ycoord}) with region {user.current_region()}")
+    print(f"privacy: {region.privacy} \
+    \n Distance: {region.user_dist_to_boundary} Expected: {region.user_location_likelihood} \
+    \n size: {region.area()} \
+    \n location:({user.xcoord}, {user.ycoord}) with region {user.current_region()}")
