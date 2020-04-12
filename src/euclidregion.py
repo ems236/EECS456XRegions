@@ -5,14 +5,15 @@ from .gridregion import GridRegion
 MIN_SIDE_LENGTH = 2.0
 
 class EuclidRegion:
-    def __init__(self, x1, y1, x2, y2, privacy = 0, distance_to_boundary = 0, boundary_liklihood = 0):
+    def __init__(self, x1, y1, x2, y2, privacy = 0, distance_to_boundary = 0, boundary_liklihood = 0, is_corner = False):
         self.x_min = min(x1, x2)
         self.y_min = min(y1, y2)
         self.x_max = max(x1, x2)
         self.y_max = max(y1, y2)
         self.privacy = privacy
         self.user_dist_to_boundary = distance_to_boundary
-        self.user_location_likelihood = boundary_liklihood 
+        self.user_location_likelihood = boundary_liklihood
+        self.is_corner = is_corner
 
     def __str__(self):
         return f"(x1: {self.x_min}, y1:{self.y_min} , x2:{self.x_max}, y2:{self.y_max})"
@@ -39,7 +40,8 @@ class EuclidRegion:
             gridregion.y_max + world_y + 0.5,
             privacy = gridregion.privacy,
             distance_to_boundary = gridregion.distance_to_boundary,
-            boundary_liklihood= gridregion.distance_likelihood)
+            boundary_liklihood= gridregion.distance_likelihood,
+            is_corner = gridregion.is_corner)
 
     @staticmethod
     def random_region(xcoord, ycoord, max_size):

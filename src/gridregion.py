@@ -34,6 +34,11 @@ class GridRegion:
         new_width = width - 2 * min_distance
         perimeter = cell_perimeter(new_height, new_width)
 
+        if all([x != 0 for x in [abs(self.x_min), abs(self.y_min), abs(self.x_max), abs(self.y_max)]]):
+            print("got one")
+
+        corner_data = [0 if x == 0 else 1 for x in [abs(self.x_min), abs(self.y_min), abs(self.x_max), abs(self.y_max)]]
+        self.is_corner = sum(corner_data) <= 2
         self.distance_to_boundary = min_distance
         self.distance_likelihood = perimeter / self.grid_area()
 
