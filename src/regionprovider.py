@@ -19,7 +19,12 @@ class RegionProvider:
         local_regions = self.local_regions_for(xcoord, ycoord, profile, neigboring_regions)
         #create usermatrix
         user_matrix = self.user_matrix(profile, local_regions)
+        user_matrix.print()
         #calculate ev distribute
+        print("\n")
+        ev_matrix = self.ev_matrix(user_matrix)
+        ev_matrix.print()
+        ayy = "lmao"
         #run the algorithm
         pass
     
@@ -29,11 +34,12 @@ class RegionProvider:
         grid_size = self.grid_size(profile)
         end_coord = grid_size // 2
 
-        local_regions = [x for x in local_regions if not self.is_in_bounds(x, end_coord)]
+        local_regions = [x for x in local_regions if self.is_in_bounds(x, end_coord)]
         return local_regions
 
     def is_in_bounds(self, region:GridRegion, end_coord):
-        return (region.x_max >= -1 * end_coord) and (region.x_min <= end_coord) and (region.y_max >= -1 * end_coord) and (region.y_min <= end_coord)
+        val = (region.x_max >= -1 * end_coord) and (region.x_min <= end_coord) and (region.y_max >= -1 * end_coord) and (region.y_min <= end_coord)
+        return val
         
     def grid_size(self, profile:UserProfile):
         return math.ceil(profile.max_size) * 2 - 1
@@ -63,9 +69,11 @@ class RegionProvider:
         for x in range(-1 * end_coord, end_coord + 1):
             for y in range(-1 * end_coord, end_coord + 1):
                 ev_matrix.set_at(x, y, self.ev_value(x, y, end_coord, user_matrix))
+        
+        return ev_matrix
 
     def manhattan_distance(self, x, y):
-        return x**2 + y**2
+        return (abs(x) + abs(y))**2 
 
     def container_bounds(self, val, end_coord):
         start:int 

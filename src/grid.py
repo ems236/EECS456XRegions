@@ -7,12 +7,20 @@ class Grid:
         # convert from 0 at center to 0 at top left corner
         self.validate_dimension(x)
         self.validate_dimension(y)
-        return self.data[self.convert_val(x), self.convert_val(y)]
+        return self.data[self.convert_val(y)][self.convert_val(x)]
 
     def set_at(self, x, y, val):
         self.validate_dimension(x)
         self.validate_dimension(y)
-        self.data[self.convert_val(x), self.convert_val(y)] = val
+        self.data[self.convert_val(y)][self.convert_val(x)] = val
+
+    def print(self):
+        for row in range(0, self.size):
+            toprint = "["
+            for col in range(0, self.size):
+                toprint = f"{toprint} {self.data[self.size - row - 1][col]))}"
+            toprint = toprint + "]"
+            print(toprint)
         
     def convert_val(self, val):
         return val + (self.size // 2)
