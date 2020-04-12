@@ -10,7 +10,7 @@ class Region:
         self.x_max = max(x1, x2)
         self.y_max = max(y1, y2)
 
-    def euclidean_area(self):
+    def euclidean_area(self, world_map = None):
         return (self.x_max - self.x_min) * (self.y_max * self.y_min)
 
     def traversible_area(self, world_map):
