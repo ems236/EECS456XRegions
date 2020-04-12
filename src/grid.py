@@ -3,15 +3,21 @@ class Grid:
         self.data = [[default_val for _ in range(0, size)] for _ in range(0, size)]
         self.size = size
 
-    def value_at(self, x, y):
+    def value_at(self, x, y, default=None):
         # convert from 0 at center to 0 at top left corner
-        self.validate_dimension(x)
-        self.validate_dimension(y)
+        is_valid = self.is_valid(x) and self.is_valid(y)
+        if not is_valid:
+            if default is not None:
+                return default
+            else:
+                raise ValueError("illegal dimension")
+
         return self.data[self.convert_val(y)][self.convert_val(x)]
 
     def set_at(self, x, y, val):
-        self.validate_dimension(x)
-        self.validate_dimension(y)
+        if not (self.is_valid(x) and self.is_valid(y)):
+            raise ValueError("illegal dimension")
+             
         self.data[self.convert_val(y)][self.convert_val(x)] = val
 
     def print(self):
@@ -25,6 +31,5 @@ class Grid:
     def convert_val(self, val):
         return val + (self.size // 2)
 
-    def validate_dimension(self, val):
-        if not (0 <=  self.convert_val(val) < self.size):
-            raise ValueError("illegal dimension")
+    def is_valid(self, val, default = None):
+        return 0 <= self.convert_val(val) < self.size
