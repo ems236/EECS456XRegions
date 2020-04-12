@@ -6,17 +6,18 @@ from .gridregion import GridRegion
 from .grid import Grid
 from .usermatrixbuilder import UserMatrixBuilder
 from .evmatrixbuilder import EVMatrixBuilder
-from .regionexpansionrunner import RegionExpansionRunner
+from .regionexpansionrunner import BaseRegionExpansionRunner
 
 
 class RegionProvider:
+    #should add optional arguments for algorithm customization
     def __init__(self, world_map, region_privacy_area_func):
         self.world_map = world_map
         self.region_privacy_area_func = region_privacy_area_func
 
         self.user_matrix_builder = UserMatrixBuilder(world_map, region_privacy_area_func)
         self.ev_matrix_builder = EVMatrixBuilder(world_map, region_privacy_area_func)
-        self.expansion_runner = RegionExpansionRunner(world_map, region_privacy_area_func)
+        self.expansion_runner = BaseRegionExpansionRunner(world_map, region_privacy_area_func)
     
     def region_for(self, xcoord, ycoord, profile, neigboring_regions):
         if not neigboring_regions:
@@ -32,8 +33,8 @@ class RegionProvider:
         ev_matrix = self.ev_matrix_builder.ev_matrix(user_matrix)
         #ev_matrix.print()
         #run the algorithm
-        #user_grid_region = self.expansion_runner.agressive_weighted_expansion_region(user_matrix, ev_matrix, profile)
-        
-        #convert grid space back to euclid
+        user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, profile)
+        #convert grid space back to euclidean space
+        return user_grid_region.to_euclidean(xcoord, ycoord)
 
     
