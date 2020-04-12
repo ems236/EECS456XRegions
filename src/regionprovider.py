@@ -1,7 +1,8 @@
 import math
 
 from .userprofile import UserProfile
-from .region import Region
+from .euclidregion import EuclidRegion
+from .gridregion import GridRegion
 from .grid import Grid
 
 
@@ -12,7 +13,7 @@ class RegionProvider:
     
     def region_for(self, xcoord, ycoord, profile, neigboring_regions):
         if not neigboring_regions:
-            return Region.random_region(xcoord, ycoord, profile.max_size)
+            return EuclidRegion.random_region(xcoord, ycoord, profile.max_size)
         
         #discretize regions and convert the coordinate system
         local_regions = self.local_regions_for(xcoord, ycoord, profile, neigboring_regions)
@@ -23,7 +24,7 @@ class RegionProvider:
         pass
     
     def local_regions_for(self, xcoord, ycoord, profile, neigboring_regions):
-        local_regions = [Region.discretized_coordinates_of(xcoord, ycoord, region) for region in neigboring_regions]
+        local_regions = [region.to_grid_region(xcoord, ycoord) for region in neigboring_regions]
         #remove regions with no overlap
         grid_size = self.grid_size(profile)
         end_coord = grid_size // 2
@@ -31,7 +32,7 @@ class RegionProvider:
         local_regions = [x for x in local_regions if not self.is_in_bounds(x, end_coord)]
         return local_regions
 
-    def is_in_bounds(self, region:Region, end_coord):
+    def is_in_bounds(self, region:GridRegion, end_coord):
         return (region.x_max >= -1 * end_coord) and (region.x_min <= end_coord) and (region.y_max >= -1 * end_coord) and (region.y_min <= end_coord)
         
     def grid_size(self, profile:UserProfile):
@@ -43,7 +44,7 @@ class RegionProvider:
         matrix = Grid(size)
         end_coord = size // 2
         #create cell values
-        region:Region
+        region:GridRegion
         for region in local_regions:
             current_size = self.region_privacy_area_func(region, self.world_map)
             #can assume all regions are at least partially in bounds
@@ -85,7 +86,7 @@ class RegionProvider:
 
         for x_diag in range(start_x, end_x + 1):
             for y_diag in range(start_y, end_y + 1):
-                new_region = Region(x, y, x_diag, y_diag)
+                new_region = GridRegion(x, y, x_diag, y_diag)
                 sum += (user_matrix.value_at(x_diag, y_diag) / self.region_privacy_area_func(new_region, self.world_map))
 
         return self.manhattan_distance(x, y) * sum

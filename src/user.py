@@ -1,4 +1,4 @@
-from .region import Region 
+from .euclidregion import EuclidRegion 
 from .userprofile import UserProfile
 
 class User:
@@ -8,7 +8,7 @@ class User:
         self.profile = profile
         self.xcoord = xcoord
         self.ycoord = ycoord
-        self.x_region = Region.random_region(xcoord, ycoord, profile.max_size)
+        self.x_region = EuclidRegion.random_region(xcoord, ycoord, profile.max_size)
 
     def current_region(self):
         return self.x_region
