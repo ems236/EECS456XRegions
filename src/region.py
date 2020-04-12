@@ -9,7 +9,11 @@ class Region:
         self.x_max = max(x1, x2)
         self.y_max = max(y1, y2)
 
-    def 
+    def euclidean_area(self):
+        return (self.x_max - self.x_min) * (self.y_max * self.y_min)
+
+    def traversible_area(self, world_map):
+        pass
 
     @staticmethod
     def random_region(xcoord, ycoord, max_size):
