@@ -1,9 +1,10 @@
 class GridRegion:
-    def __init__(self, x1, y1, x2, y2):
+    def __init__(self, x1, y1, x2, y2, privacy = 0):
         self.x_min = min(x1, x2)
         self.y_min = min(y1, y2)
         self.x_max = max(x1, x2)
         self.y_max = max(y1, y2)
+        self.privacy = privacy
 
     #euclidean area, but add 1 to each side becuase indeces have been messed with to be cell indices
     def grid_area(self, world_map = None):

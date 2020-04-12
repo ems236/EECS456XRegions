@@ -5,7 +5,7 @@ from .euclidregion import EuclidRegion
 from .gridregion import GridRegion
 from .grid import Grid
 
-K = 100
+K = 1
 
 class UserMatrixBuilder:
     def __init__(self, world_map, region_privacy_area_func):

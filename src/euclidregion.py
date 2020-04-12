@@ -5,14 +5,18 @@ from .gridregion import GridRegion
 MIN_SIDE_LENGTH = 2.0
 
 class EuclidRegion:
-    def __init__(self, x1, y1, x2, y2):
+    def __init__(self, x1, y1, x2, y2, privacy = 0):
         self.x_min = min(x1, x2)
         self.y_min = min(y1, y2)
         self.x_max = max(x1, x2)
         self.y_max = max(y1, y2)
+        self.privacy = privacy
+
+    def __str__(self):
+        return f"(x1: {self.x_min}, y1:{self.y_min} , x2:{self.x_max}, y2:{self.y_max})"
 
     def area(self, world_map = None):
-        return abs((self.x_max - self.x_min) * (self.y_max * self.y_min))
+        return abs((self.x_max - self.x_min) * (self.y_max - self.y_min))
 
     #subtract 0.5 from everything because everything is a cell index now and the origin is the center of a cell
     #subtract one from the large edge so cell indices are correct
@@ -29,7 +33,8 @@ class EuclidRegion:
             gridregion.x_min + world_x - 0.5,
             gridregion.y_min + world_y - 0.5,
             gridregion.x_max + world_x + 0.5,
-            gridregion.y_max + world_y + 0.5)
+            gridregion.y_max + world_y + 0.5,
+            gridregion.privacy)
 
     @staticmethod
     def random_region(xcoord, ycoord, max_size):

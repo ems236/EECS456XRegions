@@ -34,8 +34,9 @@ class BaseRegionExpansionRunner:
                 current_region = new_region
                 current_area = new_area
             else:
-                return current_region
+                break
         
+        current_region.privacy = self.k_anonymity_of(current_region, user_matrix)
         return current_region
 
     def expansion_direction_for(self, expansion_values):
@@ -44,7 +45,7 @@ class BaseRegionExpansionRunner:
         return vals[0][0]
 
     def should_expand(self, current_region, new_region, profile, user_matrix):
-        return self.user_density_of(current_region, user_matrix) < self.user_density_of(new_region, user_matrix)
+        return self.user_density_of(current_region, user_matrix) <= self.user_density_of(new_region, user_matrix)
 
     def sum_direction(self, grid, region:GridRegion, direction):
         if direction == LEFT:
