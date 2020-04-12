@@ -5,7 +5,7 @@ class GridRegion:
         self.x_max = max(x1, x2)
         self.y_max = max(y1, y2)
 
-    #euclidean area, but add 1 to each side becuase coordinates are cell indeces rather than boundaries
+    #euclidean area, but add 1 to each side becuase indeces have been messed with to be cell indices
     def grid_area(self, world_map = None):
         width = abs(self.x_max - self.x_min) + 1
         height = abs(self.y_max - self.y_min) + 1
