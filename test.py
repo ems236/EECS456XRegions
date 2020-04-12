@@ -2,8 +2,8 @@ from src.regionprovider import *
 from src.euclidregion import *
 from src.gridregion import *
 
-region_builder = RegionProvider(None, GridRegion.grid_area)
-test_profile = UserProfile(8, 8)
+region_builder = RegionProvider.unmodified_generator(None)
+test_profile = UserProfile(8, 12)
 
 r2 = EuclidRegion(-5.5, 0.5, -1.5, 5.5)
 r3 = EuclidRegion(0.5, 3.5, 5.5, 5.5)

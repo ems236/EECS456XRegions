@@ -15,6 +15,7 @@ class EVMatrixBuilder:
         end_coord = size // 2
         ev_matrix = Grid(size)
 
+        #you could totally do this faster with dynamic programming
         for x in range(-1 * end_coord, end_coord + 1):
             for y in range(-1 * end_coord, end_coord + 1):
                 ev_matrix.set_at(x, y, self.ev_value(x, y, end_coord, user_matrix))
