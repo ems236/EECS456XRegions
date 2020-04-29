@@ -14,7 +14,7 @@ DEFAULT_PROBABILITIES = [0.35, 0.3, 0.2, 0.15]
 #relative to adjacent peers
 DEFAULT_SAMPLE_SIZE = 0.5
 
-class RegionProvider:
+class GreedyRegionProvider:
     #should add optional arguments for algorithm customization
     def __init__(self, world_map, region_privacy_area_func, region_expansion_runner, expansion_sample_size):
         self.world_map = world_map
@@ -27,17 +27,16 @@ class RegionProvider:
     @staticmethod
     def unmodified_generator(world_map):
         expansion_runner = BaseRegionExpansionRunner(world_map, GridRegion.grid_area) 
-        return RegionProvider(world_map, GridRegion.grid_area, expansion_runner, 1)
+        return GreedyRegionProvider(world_map, GridRegion.grid_area, expansion_runner, 1)
 
     @staticmethod
     def privacy_enhanced_generator(world_map, probabilty_dist = DEFAULT_PROBABILITIES, expansion_sample_size = DEFAULT_SAMPLE_SIZE):
         expansion_runner = PrivacyExpansionRunner(world_map, GridRegion.traversible_area, probabilty_dist)
-        return RegionProvider(world_map, GridRegion.traversible_area, expansion_runner, expansion_sample_size)
+        return GreedyRegionProvider(world_map, GridRegion.traversible_area, expansion_runner, expansion_sample_size)
 
-    
     def region_for(self, xcoord, ycoord, profile, neigboring_regions):
         if not neigboring_regions:
-            return EuclidRegion.random_region(xcoord, ycoord, profile.max_size)
+            return EuclidRegion.random_region(xcoord, ycoord, profile.min_size, profile.max_size)
         
         #discretize regions and convert the coordinate system
         local_regions = self.user_matrix_builder.local_regions_for(xcoord, ycoord, profile, neigboring_regions)

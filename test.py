@@ -2,7 +2,7 @@ from src.regionprovider import *
 from src.euclidregion import *
 from src.gridregion import *
 
-region_builder = RegionProvider.unmodified_generator(None)
+region_builder = GreedyRegionProvider.unmodified_generator(None)
 test_profile = UserProfile(8, 150)
 
 r2 = EuclidRegion(-5.5, 0.5, -1.5, 5.5)
