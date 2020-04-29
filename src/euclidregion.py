@@ -44,9 +44,10 @@ class EuclidRegion:
             is_corner = gridregion.is_corner)
 
     @staticmethod
-    def random_region(xcoord, ycoord, max_size):
-        height = triangular(MIN_SIDE_LENGTH, max_size / MIN_SIDE_LENGTH)
-        width = max_size / height
+    def random_region(xcoord, ycoord, min_size, max_size):
+        size = uniform(min_size, max_size)
+        height = triangular(MIN_SIDE_LENGTH, size / MIN_SIDE_LENGTH)
+        width = size / height
 
         xmin = xcoord - uniform(0, width)
         ymin = ycoord - uniform(0, height)
