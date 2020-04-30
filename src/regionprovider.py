@@ -1,4 +1,5 @@
 import math
+import random
 
 from .userprofile import UserProfile
 from .euclidregion import EuclidRegion
@@ -23,6 +24,7 @@ class GreedyRegionProvider:
         self.user_matrix_builder = UserMatrixBuilder(world_map, region_privacy_area_func)
         self.ev_matrix_builder = EVMatrixBuilder(region_privacy_area_func)
         self.expansion_runner = region_expansion_runner
+        self.expansion_sample_size = expansion_sample_size
         
     @staticmethod
     def unmodified_generator(world_map):
@@ -44,9 +46,16 @@ class GreedyRegionProvider:
         #create usermatrix
         user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions, local_water)
         #user_matrix.print()
+
+        sampled_user_matrix:Grid = user_matrix
+        #get a sample to use for the heuristic
+        if self.expansion_sample_size < 1:
+            heuristic_regions = random.sample(local_regions, round(len(local_regions) * self.expansion_sample_size))
+            sampled_user_matrix = self.user_matrix_builder.user_matrix(profile, heuristic_regions, local_water)
+
         #calculate ev distribute
         #print("\n")
-        ev_matrix = self.ev_matrix_builder.ev_matrix(user_matrix, local_water)
+        ev_matrix = self.ev_matrix_builder.ev_matrix(sampled_user_matrix, local_water)
         #ev_matrix.print()
         #run the algorithm
         user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, local_water, profile)
