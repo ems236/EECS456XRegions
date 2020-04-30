@@ -29,21 +29,25 @@ class UserMatrixBuilder:
     def grid_size(self, profile:UserProfile):
         return math.ceil(profile.max_size) * 2 - 1
 
-    def user_matrix(self, profile, local_regions):
+    def local_map(self, xcoord, ycoord):
+        #TODO implement this
+        return self.world_map
+
+    def user_matrix(self, profile, local_regions, water_map:Grid):
         size = self.grid_size(profile)
         matrix = Grid(size)
         end_coord = size // 2
         #create cell values
         region:GridRegion
         for region in local_regions:
-            current_size = self.region_privacy_area_func(region, self.world_map)
+            current_size = self.region_privacy_area_func(region, water_map)
             #can assume all regions are at least partially in bounds
             for x in range(max(-1 * end_coord, region.x_min), min(end_coord + 1, region.x_max + 1)):
                 for y in range(max(-1 * end_coord, region.y_min), min(end_coord + 1, region.y_max + 1)):
-                    if self.should_consider_water:
-                        pass
-
-                    newval = matrix.value_at(x, y) + (K / current_size)
-                    matrix.set_at(x, y, newval)
+                    if self.should_consider_water and water_map.value_at(x, y):
+                        matrix.set_at(x, y, 0)
+                    else:
+                        newval = matrix.value_at(x, y) + (K / current_size)
+                        matrix.set_at(x, y, newval)
 
         return matrix

@@ -3,8 +3,8 @@ from .userprofile import UserProfile
 import random
 
 class PrivacyExpansionRunner(BaseRegionExpansionRunner):
-    def __init__(self, world_map, region_privacy_area_func, expansion_probabilities):
-        super().__init__(world_map, region_privacy_area_func)
+    def __init__(self, region_privacy_area_func, expansion_probabilities):
+        super().__init__(region_privacy_area_func)
         self.expansion_probabilities = expansion_probabilities
 
     def expansion_direction_for(self, expansion_values):

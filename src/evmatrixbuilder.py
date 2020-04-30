@@ -11,13 +11,14 @@ def sign(val):
     return 1 if val > 0 else -1
 
 class EVMatrixBuilder:
-    def __init__(self, world_map, region_privacy_area_func):
-        self.world_map = world_map
+    def __init__(self, region_privacy_area_func):
         self.region_privacy_area_func = region_privacy_area_func
 
-    def ev_matrix(self, user_matrix:Grid):
+    def ev_matrix(self, user_matrix:Grid, local_water):
         size = user_matrix.size
         end_coord = size // 2
+
+        self.local_water = local_water
         #ev_matrix = Grid(size)
         # this is unreasonably slow.  Replaced with dynamic programming
 #        for x in range(-1 * end_coord, end_coord + 1):
@@ -96,7 +97,7 @@ class EVMatrixBuilder:
     
     def cv_over_area(self, x, y, user_matrix:Grid):
         new_region = GridRegion(0, 0, x, y)
-        area = self.region_privacy_area_func(new_region, self.world_map)
+        area = self.region_privacy_area_func(new_region, self.local_water)
         val = user_matrix.value_at(x, y)
 
         return val / area
@@ -152,7 +153,7 @@ class EVMatrixBuilder:
         for x_diag in range(start_x, end_x + 1):
             for y_diag in range(start_y, end_y + 1):
                 new_region = GridRegion(0, 0, x_diag, y_diag)
-                area = self.region_privacy_area_func(new_region, self.world_map)
+                area = self.region_privacy_area_func(new_region, self.local_water)
                 val = user_matrix.value_at(x_diag, y_diag)
                 sum += val / area
 

@@ -13,20 +13,21 @@ DOWN = 3
 DIRECTIONS = [LEFT, RIGHT, UP, DOWN]
 
 class BaseRegionExpansionRunner:
-    def __init__(self, world_map, region_privacy_area_func):
-        self.world_map = world_map
+    def __init__(self, region_privacy_area_func):
         self.region_privacy_area_func = region_privacy_area_func
 
-    def expaned_region_for(self, user_matrix, ev_matrix, profile:UserProfile):
+    def expaned_region_for(self, user_matrix, ev_matrix, local_water, profile:UserProfile):
         current_region = GridRegion(0, 0, 0, 0)
         current_area = 0
+
+        self.local_water = local_water
 
         while current_region.grid_area() < profile.max_size:
             expansion_values = [(dir, self.sum_direction(ev_matrix, current_region, dir)) for dir in DIRECTIONS]
             direction = self.expansion_direction_for(expansion_values)
 
             new_region = self.expanded_direction(current_region, direction)
-            new_area = self.region_privacy_area_func(new_region, self.world_map)
+            new_area = self.region_privacy_area_func(new_region, local_water)
 
             if (not (new_area > profile.max_size) 
                 and (current_area < profile.min_size or self.should_expand(current_region, new_region, profile, user_matrix))
@@ -84,7 +85,7 @@ class BaseRegionExpansionRunner:
 
     def user_density_of(self, region:GridRegion, user_matrix):
         k_anonymity = self.k_anonymity_of(region, user_matrix)
-        area = self.region_privacy_area_func(region, self.world_map)
+        area = self.region_privacy_area_func(region, self.local_water)
         return k_anonymity / area
 
     def k_anonymity_of(self, region:GridRegion, user_matrix:Grid):

@@ -21,17 +21,17 @@ class GreedyRegionProvider:
         self.region_privacy_area_func = region_privacy_area_func
 
         self.user_matrix_builder = UserMatrixBuilder(world_map, region_privacy_area_func)
-        self.ev_matrix_builder = EVMatrixBuilder(world_map, region_privacy_area_func)
+        self.ev_matrix_builder = EVMatrixBuilder(region_privacy_area_func)
         self.expansion_runner = region_expansion_runner
         
     @staticmethod
     def unmodified_generator(world_map):
-        expansion_runner = BaseRegionExpansionRunner(world_map, GridRegion.grid_area) 
+        expansion_runner = BaseRegionExpansionRunner(GridRegion.grid_area) 
         return GreedyRegionProvider(world_map, GridRegion.grid_area, expansion_runner, 1)
 
     @staticmethod
     def privacy_enhanced_generator(world_map, probabilty_dist = DEFAULT_PROBABILITIES, expansion_sample_size = DEFAULT_SAMPLE_SIZE):
-        expansion_runner = PrivacyExpansionRunner(world_map, GridRegion.traversible_area, probabilty_dist)
+        expansion_runner = PrivacyExpansionRunner(GridRegion.traversible_area, probabilty_dist)
         return GreedyRegionProvider(world_map, GridRegion.traversible_area, expansion_runner, expansion_sample_size)
 
     def region_for(self, xcoord, ycoord, profile, neigboring_regions):
@@ -40,15 +40,16 @@ class GreedyRegionProvider:
         
         #discretize regions and convert the coordinate system
         local_regions = self.user_matrix_builder.local_regions_for(xcoord, ycoord, profile, neigboring_regions)
+        local_water = self.user_matrix_builder.local_map(xcoord, ycoord)
         #create usermatrix
-        user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions)
+        user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions, local_water)
         #user_matrix.print()
         #calculate ev distribute
         #print("\n")
-        ev_matrix = self.ev_matrix_builder.ev_matrix(user_matrix)
+        ev_matrix = self.ev_matrix_builder.ev_matrix(user_matrix, local_water)
         #ev_matrix.print()
         #run the algorithm
-        user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, profile)
+        user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, local_water, profile)
         #convert grid space back to euclidean space
         return EuclidRegion.from_grid_region(user_grid_region, xcoord, ycoord)
 
