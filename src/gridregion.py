@@ -1,3 +1,8 @@
+from random import uniform, triangular
+
+MIN_SIDE_LENGTH = 2
+
+
 def cell_perimeter(width, height):
     if width == 1:
         return height
@@ -6,6 +11,9 @@ def cell_perimeter(width, height):
     else:
         #ignore overlaps
         return 2 * width + 2 * (height - 2)
+
+def clamp(val, minval, maxval):
+    return max(minval, min(val, maxval))
 
 class GridRegion:
     def __init__(self, x1, y1, x2, y2, privacy = 0):
@@ -16,6 +24,20 @@ class GridRegion:
         self.privacy = privacy
         self.distance_to_boundary = 0
         self.distance_likelihood = 0
+
+    @staticmethod
+    def random_region(min_size, max_size):
+        size = round(uniform(min_size, max_size))
+        height = round(triangular(MIN_SIDE_LENGTH, size // MIN_SIDE_LENGTH))
+        width = size // height
+
+        #width / heigh correspond to # of grid cells
+        #need to convert to coordinates
+
+        xmax = round(uniform(0, width - 1))
+        ymax = round(uniform(0, height - 1))
+
+        return GridRegion(xmax - (width - 1), ymax - (height - 1), xmax, ymax)
 
     #assumes user is at 0, 0
     def calculate_boundary_stats(self):
