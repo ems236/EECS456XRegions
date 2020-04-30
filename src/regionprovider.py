@@ -7,7 +7,7 @@ from .gridregion import GridRegion
 from .grid import Grid
 from .usermatrixbuilder import UserMatrixBuilder
 from .evmatrixbuilder import EVMatrixBuilder
-from .regionexpansionrunner import BaseRegionExpansionRunner
+from .baseregionexpansionrunner import BaseRegionExpansionRunner
 from .privacyexpansionrunner import PrivacyExpansionRunner
 
 

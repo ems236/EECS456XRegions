@@ -1,4 +1,4 @@
-from .regionexpansionrunner import BaseRegionExpansionRunner
+from .baseregionexpansionrunner import BaseRegionExpansionRunner
 from .userprofile import UserProfile
 import random
 
