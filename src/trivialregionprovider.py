@@ -39,7 +39,7 @@ class TrivialRegionProvider:
 
     def random_non_water_region(self, xcoord, ycoord, profile, neigboring_regions):
         local_neighbors = self.user_matrix_builder.local_regions_for(xcoord, ycoord, profile, neigboring_regions)
-        local_water = self.user_matrix_builder.local_map(xcoord, ycoord)
+        local_water = self.user_matrix_builder.water_map(profile, xcoord, ycoord)
         user_matrix = self.user_matrix_builder.user_matrix(profile, local_neighbors, local_water)
 
         for _ in range(0, MAX_ATTEMPTS):

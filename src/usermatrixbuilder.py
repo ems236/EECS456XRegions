@@ -29,9 +29,24 @@ class UserMatrixBuilder:
     def grid_size(self, profile:UserProfile):
         return math.ceil(profile.max_size) * 2 - 1
 
-    def local_map(self, xcoord, ycoord):
-        #TODO implement this
-        return self.world_map
+    def water_map(self, profile:UserProfile, xcoord, ycoord):
+        grid_size = self.grid_size(profile)
+        end_coord = grid_size // 2
+
+        local_water = Grid(grid_size)
+
+        center_x = round(xcoord)
+        min_x = center_x - end_coord
+
+        center_y = round(ycoord)
+        min_y = center_y - end_coord
+
+        for x in range(0, grid_size):
+            for y in range(0, grid_size):
+                is_water = self.world_map.value_at(min_x + x, min_y + y)
+                local_water.set_at(-end_coord + x, -end_coord + y, is_water)
+
+        return local_water
 
     def user_matrix(self, profile, local_regions, water_map:Grid):
         size = self.grid_size(profile)

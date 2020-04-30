@@ -40,7 +40,7 @@ class GreedyRegionProvider:
         
         #discretize regions and convert the coordinate system
         local_regions = self.user_matrix_builder.local_regions_for(xcoord, ycoord, profile, neigboring_regions)
-        local_water = self.user_matrix_builder.local_map(xcoord, ycoord)
+        local_water = self.user_matrix_builder.water_map(profile, xcoord, ycoord)
         #create usermatrix
         user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions, local_water)
         #user_matrix.print()
