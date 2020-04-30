@@ -11,7 +11,7 @@ class User:
         self.profile = profile
         self.xcoord = xcoord
         self.ycoord = ycoord
-        self.x_region = EuclidRegion.random_region(xcoord, ycoord, profile.max_size)
+        self.x_region = EuclidRegion.random_region(xcoord, ycoord, profile.min_size, profile.max_size)
         self.id = uuid.uuid4()
 
     def current_region(self):

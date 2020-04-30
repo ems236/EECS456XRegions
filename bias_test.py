@@ -4,10 +4,10 @@ import csv
 from src.world import World
 from src.user import User
 from src.euclidregion import EuclidRegion
-from src.regionprovider import RegionProvider
+from src.regionprovider import GreedyRegionProvider
 from src.userprofile import UserProfile
 
-region_provider = RegionProvider.unmodified_generator(None)
+region_provider = GreedyRegionProvider.unmodified_generator(None)
 world = World(None, region_provider)
 default_profile = UserProfile(10, 100, 3)
 
