@@ -8,9 +8,10 @@ from .grid import Grid
 K = 1
 
 class UserMatrixBuilder:
-    def __init__(self, world_map, region_privacy_area_func):
+    def __init__(self, world_map, region_privacy_area_func, should_consider_water = False):
         self.world_map = world_map
         self.region_privacy_area_func = region_privacy_area_func
+        self.should_consider_water = should_consider_water
 
     def local_regions_for(self, xcoord, ycoord, profile, neigboring_regions):
         local_regions = [region.to_grid_region(xcoord, ycoord) for region in neigboring_regions]
@@ -28,7 +29,6 @@ class UserMatrixBuilder:
     def grid_size(self, profile:UserProfile):
         return math.ceil(profile.max_size) * 2 - 1
 
-
     def user_matrix(self, profile, local_regions):
         size = self.grid_size(profile)
         matrix = Grid(size)
@@ -40,6 +40,9 @@ class UserMatrixBuilder:
             #can assume all regions are at least partially in bounds
             for x in range(max(-1 * end_coord, region.x_min), min(end_coord + 1, region.x_max + 1)):
                 for y in range(max(-1 * end_coord, region.y_min), min(end_coord + 1, region.y_max + 1)):
+                    if self.should_consider_water:
+                        pass
+
                     newval = matrix.value_at(x, y) + (K / current_size)
                     matrix.set_at(x, y, newval)
 
