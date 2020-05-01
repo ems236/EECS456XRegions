@@ -3,7 +3,7 @@ from src.euclidregion import *
 from src.gridregion import *
 
 region_builder = GreedyRegionProvider.unmodified_generator(None)
-test_profile = UserProfile(8, 150)
+test_profile = UserProfile(1, 8)
 
 r2 = EuclidRegion(-5.5, 0.5, -1.5, 5.5)
 r3 = EuclidRegion(0.5, 3.5, 5.5, 5.5)

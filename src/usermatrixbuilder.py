@@ -1,4 +1,5 @@
 import math
+import random
 
 from .userprofile import UserProfile
 from .euclidregion import EuclidRegion
@@ -12,6 +13,13 @@ class UserMatrixBuilder:
         self.world_map = world_map
         self.region_privacy_area_func = region_privacy_area_func
         self.should_consider_water = should_consider_water
+
+    def perturbed_user_location(self, xcoord, ycoord, profile):
+
+        x_noise = random.uniform(-0.5, 0.5)
+        y_noise = random.uniform(-0.5, 0.5)
+
+        return (x_noise, y_noise)
 
     def local_regions_for(self, xcoord, ycoord, profile, neigboring_regions):
         local_regions = [region.to_grid_region(xcoord, ycoord) for region in neigboring_regions]

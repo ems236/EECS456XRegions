@@ -41,8 +41,10 @@ class GreedyRegionProvider:
             return EuclidRegion.random_region(xcoord, ycoord, profile.min_size, profile.max_size)
         
         #discretize regions and convert the coordinate system
-        local_regions = self.user_matrix_builder.local_regions_for(xcoord, ycoord, profile, neigboring_regions)
-        local_water = self.user_matrix_builder.water_map(profile, xcoord, ycoord)
+        #shift a bit so that user location can be anywhere within its cell
+        (perturbed_x, perturbed_y) = self.user_matrix_builder.perturbed_user_location(xcoord, ycoord, profile)
+        local_regions = self.user_matrix_builder.local_regions_for(perturbed_x, perturbed_y, profile, neigboring_regions)
+        local_water = None if self.world_map is None else self.user_matrix_builder.water_map(profile, perturbed_x, perturbed_y)
         #create usermatrix
         user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions, local_water)
         #user_matrix.print()
@@ -56,10 +58,10 @@ class GreedyRegionProvider:
         #calculate ev distribute
         #print("\n")
         ev_matrix = self.ev_matrix_builder.ev_matrix(sampled_user_matrix, local_water)
-        #ev_matrix.print()
+        ev_matrix.print()
         #run the algorithm
         user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, local_water, profile)
         #convert grid space back to euclidean space
-        return EuclidRegion.from_grid_region(user_grid_region, xcoord, ycoord)
+        return EuclidRegion.from_grid_region(user_grid_region, perturbed_x, perturbed_y)
 
     
