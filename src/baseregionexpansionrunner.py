@@ -89,7 +89,7 @@ class BaseRegionExpansionRunner:
         return k_anonymity / area
 
     def k_anonymity_of(self, region:GridRegion, user_matrix:Grid):
-        sum = 0
+        sum = 1
         for x in range(region.x_min, region.x_max + 1):
             for y in range(region.y_min, region.y_max + 1):
                 sum += user_matrix.value_at(x, y)

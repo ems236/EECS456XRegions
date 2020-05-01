@@ -37,7 +37,7 @@ for _ in range(0, USER_COUNT):
     add_random_user(world)
 
 
-with open('region_info.csv', 'w', newline='') as results:
+with open('bias.csv', 'w', newline='') as results:
     writer = csv.writer(results)
     writer.writerow(["Generation #",
     "Region Anonymity",

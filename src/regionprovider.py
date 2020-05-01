@@ -33,8 +33,13 @@ class GreedyRegionProvider:
 
     @staticmethod
     def privacy_enhanced_generator(world_map, probabilty_dist = DEFAULT_PROBABILITIES, expansion_sample_size = DEFAULT_SAMPLE_SIZE):
-        expansion_runner = PrivacyExpansionRunner(GridRegion.traversible_area, probabilty_dist)
-        return GreedyRegionProvider(world_map, GridRegion.traversible_area, expansion_runner, expansion_sample_size)
+        expansion_runner = PrivacyExpansionRunner(GridRegion.grid_area, probabilty_dist)
+        return GreedyRegionProvider(world_map, GridRegion.grid_area, expansion_runner, expansion_sample_size)
+
+    @staticmethod
+    def water_enhanced_generator(world_map):
+        expansion_runner = BaseRegionExpansionRunner(GridRegion.traversible_area) 
+        return GreedyRegionProvider(world_map, GridRegion.traversible_area, expansion_runner, 1)
 
     def region_for(self, xcoord, ycoord, profile, neigboring_regions):
         if not neigboring_regions:
