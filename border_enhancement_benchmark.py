@@ -13,7 +13,7 @@ from src.gridregion import GridRegion
 MAX_AREA = 100
 MAP_SIZE = 300 
 
-default_profile = UserProfile(10, MAX_AREA, 3)
+default_profile = UserProfile(65, MAX_AREA, 3)
 
 
 def add_random_user(world):
