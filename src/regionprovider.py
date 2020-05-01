@@ -51,14 +51,16 @@ class GreedyRegionProvider:
         local_regions = self.user_matrix_builder.local_regions_for(perturbed_x, perturbed_y, profile, neigboring_regions)
         local_water = None if self.world_map is None else self.user_matrix_builder.water_map(profile, perturbed_x, perturbed_y)
         #create usermatrix
-        user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions, local_water)
-        #user_matrix.print()
 
-        sampled_user_matrix:Grid = user_matrix
-        #get a sample to use for the heuristic
-        if self.expansion_sample_size < 1:
-            heuristic_regions = random.sample(local_regions, round(len(local_regions) * self.expansion_sample_size))
-            sampled_user_matrix = self.user_matrix_builder.user_matrix(profile, heuristic_regions, local_water)
+        #partition set into one for EV only
+        random.shuffle(local_regions)
+        boundary = round(self.expansion_sample_size * len(local_regions))
+        heuristic_regions = local_regions[:boundary]
+        other_regions = local_regions[boundary:]
+        
+        
+        user_matrix, sampled_user_matrix = self.user_matrix_builder.user_matrix(profile, heuristic_regions, other_regions, local_water)
+        #user_matrix.print()
 
         #calculate ev distribute
         #print("\n")
