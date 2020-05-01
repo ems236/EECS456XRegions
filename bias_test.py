@@ -49,7 +49,7 @@ with open('region_info.csv', 'w', newline='') as results:
             data = [gen, 
             region.privacy, 
             region.user_dist_to_boundary, 
-            region.user_location_likelihood,
+            region.user_location_likelihoods[region.user_dist_to_boundary],
             region.is_corner, 
             region.area(),
             user.xcoord,
