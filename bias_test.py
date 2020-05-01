@@ -30,7 +30,7 @@ def coords_in_bounds(user:User):
 
     return x_in and y_in
 
-USER_COUNT = 2500
+USER_COUNT = 7500
 GENERATIONS = 1
 
 for _ in range(0, USER_COUNT):
@@ -58,7 +58,7 @@ with open('region_info.csv', 'w', newline='') as results:
         start = int(round(time.time() * 1000))
 
         middler_users = [u for u in world.users if coords_in_bounds(u)]
-
+        print(len(middler_users))
         for user in middler_users:
             print(int(round(time.time() * 1000)) - start)
             start = int(round(time.time() * 1000))
