@@ -11,8 +11,8 @@ from src.gridregion import GridRegion
 
 
 
-MAX_AREA = 50
-MAP_SIZE = 150 
+MAX_AREA = 100
+MAP_SIZE = 250 
 
 default_profile = UserProfile(10, MAX_AREA, 3)
 
@@ -32,10 +32,10 @@ def coords_in_bounds(user:User):
 def linear_probabilities_for(k):
     #k + s + k + 2s + k + 3s + k = 1
     # 6s = 1 - 4k
-    s = (1 - 5 * k) / 6
+    s = (1 - 4 * k) / 6
     return [k + 3 * s, k + 2 * s, k + s, k]
 
-USER_COUNT = 2000
+USER_COUNT = 3000
 GENERATIONS = 1
 
 def distance_to_boundary_data_for(state, writer, k):
@@ -99,6 +99,6 @@ with open('border_fix.csv', 'w', newline='') as results:
     "expected corners"])
     state = random.getstate()
 
-    for k_int in range(0, 25):
-        k = 1 / k_int if k_int > 0 else 0
+    for k_int in range(0, 25, 2):
+        k = k_int / 100
         distance_to_boundary_data_for(state, writer, k)
