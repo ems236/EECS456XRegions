@@ -11,7 +11,7 @@ from .baseregionexpansionrunner import BaseRegionExpansionRunner
 from .privacyexpansionrunner import PrivacyExpansionRunner
 
 
-DEFAULT_PROBABILITIES = [0.35, 0.3, 0.2, 0.15]
+DEFAULT_PROBABILITIES = [0.4, 0.3, 0.2, 0.1]
 #relative to adjacent peers
 DEFAULT_SAMPLE_SIZE = 0.5
 
