@@ -1,3 +1,63 @@
+from .grid import Grid
+import random
+
+def draw_circle(grid:Grid):
+    size = random.randint(1, 7)
+    end_coord = grid.size // 2
+    origin_x = random.randint(-end_coord + size, end_coord - size)
+    origin_y = random.randint(-end_coord + size, end_coord - size)
+
+    sum = 0
+    for x in range(-size, size + 1):
+        for y in range(-size, size + 1):
+            dist = round((x**2 + y**2)**0.5)
+            if dist <= size:
+                sum += 1
+                grid.set_at(origin_x + x, origin_y + y, True)
+    
+    return sum
+
+
+
+def land_map(size):
+    return Grid(size, False)
+
+def river_map(size):
+    grid = land_map(size)
+
+def lake_map(size):
+    grid = land_map(size)
+
+    half = size**2 // 2
+    sum = 0
+    while sum < half:
+        sum += draw_circle(grid)
+    
+    return grid
+
+
+def coast_map(size):
+    grid = land_map(size)
+    end_coord = size // 2
+
+    for x in range(0, end_coord + 1):
+        for y in range(-end_coord, end_coord + 1):
+            grid.set_at(x, y, True)
+
+    for y in range(-end_coord, end_coord + 1):
+        x_offset = random.triangular(-20, 20)
+        if x_offset >= 0:
+            for x in range(0, x_offset):
+                grid.set_at(x, y, False)
+        else:
+            for x in range(x_offset, 0):
+                grid.set_at(x, y, True)
+
+    return grid
+
+
+
+
 
 columns = 10
 rows = 10

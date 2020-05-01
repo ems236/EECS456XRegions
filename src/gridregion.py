@@ -88,7 +88,7 @@ class GridRegion:
         sum = 0
         for x in range(self.x_min, self.x_max + 1):
             for y in range(self.y_min, self.y_max + 1):
-                if water_map.value_at(x, y):
+                if not water_map.value_at(x, y):
                     sum += 1
         
         return sum

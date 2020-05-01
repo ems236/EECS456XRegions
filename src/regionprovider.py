@@ -41,7 +41,7 @@ class GreedyRegionProvider:
         expansion_runner = BaseRegionExpansionRunner(GridRegion.traversible_area) 
         return GreedyRegionProvider(world_map, GridRegion.traversible_area, expansion_runner, 1)
 
-    def region_for(self, xcoord, ycoord, profile, neigboring_regions):
+    def region_for(self, xcoord, ycoord, profile, neigboring_regions, use_water_stats = False):
         if not neigboring_regions:
             return EuclidRegion.random_region(xcoord, ycoord, profile.min_size, profile.max_size)
         
@@ -64,8 +64,14 @@ class GreedyRegionProvider:
         #print("\n")
         ev_matrix = self.ev_matrix_builder.ev_matrix(sampled_user_matrix, local_water)
         #ev_matrix.print()
+
+        water_user_matrix = None
+        if use_water_stats:
+            water_builder = UserMatrixBuilder(self.world_map, GridRegion.grid_area, True)
+            water_user_matrix = water_builder.user_matrix(profile, local_regions, local_water)
+
         #run the algorithm
-        user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, local_water, profile)
+        user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, local_water, profile, water_user_matrix = water_user_matrix)
         #convert grid space back to euclidean space
         return EuclidRegion.from_grid_region(user_grid_region, perturbed_x, perturbed_y)
 

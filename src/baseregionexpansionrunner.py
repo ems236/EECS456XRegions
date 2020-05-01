@@ -16,7 +16,7 @@ class BaseRegionExpansionRunner:
     def __init__(self, region_privacy_area_func):
         self.region_privacy_area_func = region_privacy_area_func
 
-    def expaned_region_for(self, user_matrix, ev_matrix, local_water, profile:UserProfile):
+    def expaned_region_for(self, user_matrix, ev_matrix, local_water, profile:UserProfile, water_user_matrix = None):
         current_region = GridRegion(0, 0, 0, 0)
         current_area = 0
 
@@ -27,18 +27,24 @@ class BaseRegionExpansionRunner:
             direction = self.expansion_direction_for(expansion_values)
 
             new_region = self.expanded_direction(current_region, direction)
-            new_area = self.region_privacy_area_func(new_region, local_water)
+            new_area = current_region.grid_area()
 
             if (not (new_area > profile.max_size) 
                 and (current_area < profile.min_size or self.should_expand(current_region, new_region, profile, user_matrix))
             ):
                 current_region = new_region
-                current_area = new_area
+                current_area = self.region_privacy_area_func(current_region, local_water)
             else:
                 break
         
+        #not always true but only relevant for tests where it will be true
+        current_region.non_water_area = current_area
         current_region.privacy = self.k_anonymity_of(current_region, user_matrix)
         current_region.calculate_boundary_stats()
+        if water_user_matrix is not None:
+            current_region.non_water_area = current_region.traversible_area(local_water)
+            current_region.water_anonymity = self.k_anonymity_of(current_region, water_user_matrix)
+
         return current_region
 
     def expansion_direction_for(self, expansion_values):
