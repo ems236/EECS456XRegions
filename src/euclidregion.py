@@ -18,6 +18,12 @@ class EuclidRegion:
     def __str__(self):
         return f"(x1: {self.x_min}, y1:{self.y_min} , x2:{self.x_max}, y2:{self.y_max})"
 
+    def height(self):
+        return abs((self.y_max - self.y_min))
+
+    def width(self):
+        return (self.x_max - self.x_min)
+
     def area(self, world_map = None):
         return abs((self.x_max - self.x_min) * (self.y_max - self.y_min))
 

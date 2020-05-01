@@ -11,7 +11,7 @@ from src.userprofile import UserProfile
 from src.gridregion import GridRegion
 
 MAX_AREA = 100
-MAP_SIZE = 250 
+MAP_SIZE = 300 
 
 default_profile = UserProfile(10, MAX_AREA, 3)
 
@@ -28,7 +28,7 @@ def coords_in_bounds(user:User):
 
     return x_in and y_in
 
-USER_COUNT = 3000
+USER_COUNT = 4500
 
 def distance_to_boundary_data_for(state, metrics_writer, border_writer, region_provider, description):
     random.setstate(state)
@@ -46,8 +46,8 @@ def distance_to_boundary_data_for(state, metrics_writer, border_writer, region_p
     for user in middler_users:
         start = int(round(time.time() * 1000))
         user.update_region()
-        time = int(round(time.time() * 1000)) - start
-        print(time)
+        duration = int(round(time.time() * 1000)) - start
+        print(duration)
         
 
         region:EuclidRegion
@@ -55,7 +55,7 @@ def distance_to_boundary_data_for(state, metrics_writer, border_writer, region_p
 
         metrics["k-anon"] += region.privacy
         metrics["area"] += region.area()
-        metrics["time"] += time
+        metrics["time"] += duration
 
         if region.user_dist_to_boundary in results["dist_to_boundary"]:
             results["dist_to_boundary"][region.user_dist_to_boundary] += 1
@@ -104,7 +104,7 @@ with open('border_fix_metrics.csv', 'w', newline='') as results:
         trivial_alg = TrivialRegionProvider(None, False)
 
         distance_to_boundary_data_for(state, writer, bias_writer, original_alg, "Unmodified")
-        distance_to_boundary_data_for(state, writer, bias_writer, None, "Enhanced")
-        distance_to_boundary_data_for(state, writer, bias_writer, None, "Trivial")
+        distance_to_boundary_data_for(state, writer, bias_writer, updated_alg, "Enhanced")
+        distance_to_boundary_data_for(state, writer, bias_writer, trivial_alg, "Trivial")
 
 

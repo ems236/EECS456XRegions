@@ -4,11 +4,13 @@ from .gridregion import GridRegion
 from .grid import Grid
 from .usermatrixbuilder import UserMatrixBuilder
 
+import math
+
 def k_anonymity_euclid(region, neigboring_regions):
     k_anon = 1
     neigbor:EuclidRegion
     for neigbor in neigboring_regions:
-        sum += overlap_area(region, neigbor) / neigbor.area()
+        k_anon += overlap_area(region, neigbor) / neigbor.area()
     return k_anon
 
 def k_anonymity_of_water(region:GridRegion, user_matrix:Grid):
@@ -28,6 +30,29 @@ def overlap_area(r1:EuclidRegion, r2:EuclidRegion):
     y2 = min(r1.y_max, r2.y_max)
 
     return abs(x1 - x2) * abs(y1 - y2)
+
+def load_boundary_stats_of(region:EuclidRegion):
+    height = region.height()
+    width = region.width()
+
+    area = region.area()
+
+    perimeter_map = {}
+    areas = []
+    current_height = height
+    current_width = width
+    while current_height > 0 and current_width > 0:
+        areas.append(current_height * current_width)
+        current_height -= 2
+        current_width -= 2
+
+    perimeters = [a for a in areas]
+    for i in range(0, len(areas) - 1):
+        perimeters[i] = areas[i] - areas[i + 1]
+        perimeter_map[i] = perimeters[i] / area
+    
+    perimeter_map[len(areas) - 1] = areas[-1] / area
+    region.user_location_likelihoods = perimeter_map   
 
 
 MAX_ATTEMPTS = 300
@@ -72,13 +97,14 @@ class TrivialRegionProvider:
             return 
         else:
             region:EuclidRegion = self.random_region(xcoord, ycoord, profile, neigboring_regions)
-            grid = region.to_grid_region(xcoord, ycoord)
-            grid.calculate_boundary_stats()
+            
+            load_boundary_stats_of(region)
 
-            #don't convert back because rounding messes it up
-            region.user_dist_to_boundary = grid.distance_to_boundary
-            region.user_location_likelihoods = grid.distance_likelihoods
-            region.is_corner = grid.is_corner
+            min_x = min(math.floor(xcoord - region.x_min), math.floor(region.x_max - xcoord))
+            min_y = min(math.floor(ycoord - region.y_min), math.floor(region.y_max - ycoord))
+
+            region.user_dist_to_boundary = min(min_x, min_y)
+            region.is_corner = min_x == min_y and min_x == 0
 
             return region
 
