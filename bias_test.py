@@ -1,24 +1,37 @@
 import random
 import csv
+import time
 
 from src.world import World
 from src.user import User
 from src.euclidregion import EuclidRegion
 from src.regionprovider import GreedyRegionProvider
 from src.userprofile import UserProfile
+from src.gridregion import GridRegion
 
 region_provider = GreedyRegionProvider.unmodified_generator(None)
 world = World(None, region_provider)
-default_profile = UserProfile(10, 100, 3)
+
+MAX_AREA = 100
+MAP_SIZE = 300 
+
+default_profile = UserProfile(10, MAX_AREA, 3)
+
 
 def add_random_user(world):
-    x = random.uniform(0, 200)
-    y = random.uniform(0, 200)
+    x = random.uniform(0, MAP_SIZE)
+    y = random.uniform(0, MAP_SIZE)
 
     world.add_user(x, y, default_profile)
 
-USER_COUNT = 100
-GENERATIONS = 3
+def coords_in_bounds(user:User):
+    x_in = MAX_AREA <= user.xcoord <= MAP_SIZE - MAX_AREA
+    y_in = MAX_AREA <= user.ycoord <= MAP_SIZE - MAX_AREA
+
+    return x_in and y_in
+
+USER_COUNT = 2500
+GENERATIONS = 1
 
 for _ in range(0, USER_COUNT):
     add_random_user(world)
@@ -41,7 +54,15 @@ with open('region_info.csv', 'w', newline='') as results:
     
     for gen in range(0, GENERATIONS):
         user:User
-        for user in world.users:
+
+        start = int(round(time.time() * 1000))
+
+        middler_users = [u for u in world.users if coords_in_bounds(u)]
+
+        for user in middler_users:
+            print(int(round(time.time() * 1000)) - start)
+            start = int(round(time.time() * 1000))
+
             user.update_region()
             region:EuclidRegion
             region = user.current_region()

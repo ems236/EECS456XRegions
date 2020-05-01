@@ -59,7 +59,7 @@ class GridRegion:
         area = self.grid_area()
 
         perimeter_map = {}
-        max_distance = min((height + 1) // 2, (width + 1) // 2)
+        max_distance = min((height - 1) // 2, (width - 1) // 2)
         for distance in range(0, max_distance + 1):
             perimeter_map[distance] = cell_perimeter_at_distance(distance, width, height) / area
         # a ridiculous check for if a region is a non boundary

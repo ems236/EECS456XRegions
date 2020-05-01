@@ -16,8 +16,8 @@ class UserMatrixBuilder:
 
     def perturbed_user_location(self, xcoord, ycoord, profile):
 
-        x_noise = random.uniform(-0.5, 0.5)
-        y_noise = random.uniform(-0.5, 0.5)
+        x_noise = xcoord + random.uniform(-0.5, 0.5)
+        y_noise = ycoord + random.uniform(-0.5, 0.5)
 
         return (x_noise, y_noise)
 

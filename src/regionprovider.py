@@ -58,7 +58,7 @@ class GreedyRegionProvider:
         #calculate ev distribute
         #print("\n")
         ev_matrix = self.ev_matrix_builder.ev_matrix(sampled_user_matrix, local_water)
-        ev_matrix.print()
+        #ev_matrix.print()
         #run the algorithm
         user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, local_water, profile)
         #convert grid space back to euclidean space
