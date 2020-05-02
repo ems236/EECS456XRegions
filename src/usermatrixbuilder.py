@@ -60,21 +60,23 @@ class UserMatrixBuilder:
 
         return local_water
 
-    def user_matrix(self, profile, local_regions, water_map:Grid):
+    def user_matrix(self, profile, local_regions, water_map:Grid, origin_x = 0, origin_y = 0):
         size = self.grid_size(profile)
         matrix = Grid(size)
         end_coord = size // 2
         #create cell values
         region:GridRegion
         for region in local_regions:
-            current_size = self.region_privacy_area_func(region, water_map)
+            current_size = region.grid_area()
+            if self.should_consider_water:
+                current_size = region.traversible_area_global(self.world_map, origin_x, origin_y)
             #can assume all regions are at least partially in bounds
             for x in range(max(-1 * end_coord, region.x_min), min(end_coord + 1, region.x_max + 1)):
                 for y in range(max(-1 * end_coord, region.y_min), min(end_coord + 1, region.y_max + 1)):
                     if self.should_consider_water and water_map.value_at(x, y):
                         matrix.set_at(x, y, 0)
                     else:
-                        newval = matrix.value_at(x, y) + (K / current_size)
+                        newval = matrix.value_at(x, y) + (K / (1 if current_size == 0 else current_size))
                         matrix.set_at(x, y, newval)
 
         return matrix

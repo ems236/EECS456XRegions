@@ -17,12 +17,12 @@ DEFAULT_SAMPLE_SIZE = 0.5
 
 class GreedyRegionProvider:
     #should add optional arguments for algorithm customization
-    def __init__(self, world_map, region_privacy_area_func, region_expansion_runner, expansion_sample_size):
+    def __init__(self, world_map, region_privacy_area_func, region_expansion_runner, expansion_sample_size, should_use_water = False):
         self.world_map = world_map
         self.region_privacy_area_func = region_privacy_area_func
 
-        self.user_matrix_builder = UserMatrixBuilder(world_map, region_privacy_area_func)
-        self.ev_matrix_builder = EVMatrixBuilder(region_privacy_area_func)
+        self.user_matrix_builder = UserMatrixBuilder(world_map, region_privacy_area_func, should_consider_water = should_use_water)
+        self.ev_matrix_builder = EVMatrixBuilder(region_privacy_area_func, need_areas = should_use_water)
         self.expansion_runner = region_expansion_runner
         self.expansion_sample_size = expansion_sample_size
         
@@ -39,7 +39,7 @@ class GreedyRegionProvider:
     @staticmethod
     def water_enhanced_generator(world_map):
         expansion_runner = BaseRegionExpansionRunner(GridRegion.traversible_area) 
-        return GreedyRegionProvider(world_map, GridRegion.traversible_area, expansion_runner, 1)
+        return GreedyRegionProvider(world_map, GridRegion.traversible_area, expansion_runner, 1, True)
 
     def region_for(self, xcoord, ycoord, profile, neigboring_regions, use_water_stats = False):
         if not neigboring_regions:
@@ -51,14 +51,14 @@ class GreedyRegionProvider:
         local_regions = self.user_matrix_builder.local_regions_for(perturbed_x, perturbed_y, profile, neigboring_regions)
         local_water = None if self.world_map is None else self.user_matrix_builder.water_map(profile, perturbed_x, perturbed_y)
         #create usermatrix
-        user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions, local_water)
+        user_matrix = self.user_matrix_builder.user_matrix(profile, local_regions, local_water, origin_x=xcoord, origin_y=ycoord)
         #user_matrix.print()
 
         sampled_user_matrix:Grid = user_matrix
         #get a sample to use for the heuristic
         if self.expansion_sample_size < 1:
             heuristic_regions = random.sample(local_regions, round(len(local_regions) * self.expansion_sample_size))
-            sampled_user_matrix = self.user_matrix_builder.user_matrix(profile, heuristic_regions, local_water)
+            sampled_user_matrix = self.user_matrix_builder.user_matrix(profile, heuristic_regions, local_water, origin_x=xcoord, origin_y=ycoord)
 
         #calculate ev distribute
         #print("\n")
@@ -68,7 +68,7 @@ class GreedyRegionProvider:
         water_user_matrix = None
         if use_water_stats:
             water_builder = UserMatrixBuilder(self.world_map, GridRegion.grid_area, True)
-            water_user_matrix = water_builder.user_matrix(profile, local_regions, local_water)
+            water_user_matrix = water_builder.user_matrix(profile, local_regions, local_water, origin_x=xcoord, origin_y=ycoord)
 
         #run the algorithm
         user_grid_region = self.expansion_runner.expaned_region_for(user_matrix, ev_matrix, local_water, profile, water_user_matrix = water_user_matrix)

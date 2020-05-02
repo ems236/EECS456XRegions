@@ -1,4 +1,5 @@
 from random import uniform, triangular
+import math
 
 MIN_SIDE_LENGTH = 2
 
@@ -93,3 +94,24 @@ class GridRegion:
                     sum += 1
         
         return sum
+
+    def traversible_area_global(self, global_water, origin_x, origin_y):
+        sum = 0
+        for x in range(self.x_min, self.x_max + 1):
+            for y in range(self.y_min, self.y_max + 1):
+                world_water_offset = global_water.size // 2
+
+                water_origin_x = math.floor(origin_x) - world_water_offset
+                water_origin_y = math.floor(origin_y) - world_water_offset
+                
+                water_x = water_origin_x + x
+                water_y = water_origin_y + y
+                #if abs(water_x) > 149 or abs(water_y) > 149:
+                #    print("help") 
+
+                if not global_water.value_at(water_x, water_y, False):
+                    sum += 1
+
+        return sum
+                
+        

@@ -2,7 +2,7 @@ from .grid import Grid
 import random
 
 def draw_circle(grid:Grid):
-    size = random.randint(1, 4)
+    size = random.randint(5, 20)
     end_coord = grid.size // 2
     origin_x = random.randint(-end_coord + size, end_coord - size)
     origin_y = random.randint(-end_coord + size, end_coord - size)
@@ -21,9 +21,6 @@ def draw_circle(grid:Grid):
 
 def land_map(size):
     return Grid(size, False)
-
-def river_map(size):
-    grid = land_map(size)
 
 def lake_map(size):
     grid = land_map(size)

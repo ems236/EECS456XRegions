@@ -11,8 +11,9 @@ def sign(val):
     return 1 if val > 0 else -1
 
 class EVMatrixBuilder:
-    def __init__(self, region_privacy_area_func):
+    def __init__(self, region_privacy_area_func, need_areas = False):
         self.region_privacy_area_func = region_privacy_area_func
+        self.need_areas = need_areas
 
     def ev_matrix(self, user_matrix:Grid, local_water):
         size = user_matrix.size
@@ -25,7 +26,10 @@ class EVMatrixBuilder:
 #            for y in range(-1 * end_coord, end_coord + 1):
 #                ev_matrix.set_at(x, y, self.ev_value(x, y, end_coord, user_matrix))
 
+
+        self.current_area_matrix = self.area_matrix(local_water) if self.need_areas else None
         ev_matrix = self.sum_matrix(user_matrix)
+
         
         for x in range(-1 * end_coord, end_coord + 1):
             for y in range(-1 * end_coord, end_coord + 1):
@@ -97,9 +101,22 @@ class EVMatrixBuilder:
     
     def cv_over_area(self, x, y, user_matrix:Grid):
         new_region = GridRegion(0, 0, x, y)
-        area = self.region_privacy_area_func(new_region, self.local_water)
+        area = 0
+        if self.need_areas:
+            area = self.current_area_matrix.value_at(x, y)
+        else:
+            area = self.region_privacy_area_func(new_region, self.local_water)
+
         val = user_matrix.value_at(x, y)
 
+        if area == 0:
+            if val == 0:
+                return 0
+            else:
+                print("weird")
+                area = self.current_area_matrix.value_at(x, y)
+                val = self.local_water.value_at(x, y)
+                return val / new_region.grid_area()
         return val / area
 
     def load_sum_matrix_corner_val(self, sum_matrix:Grid, user_matrix, x, y):
@@ -143,6 +160,76 @@ class EVMatrixBuilder:
             ev = ev + up + down + horizontal
 
         sum_matrix.set_at(x, y, ev)
+
+
+    def area_matrix(self, local_water):
+        size = local_water.size
+        area_matrix = Grid(size)
+
+        area_matrix.set_at(0, 0, local_water.value_at(0, 0))
+        self.load_area_matrix_center(area_matrix, local_water, 0, -1)
+        self.load_area_matrix_center(area_matrix, local_water, 0, 1)
+        self.load_area_matrix_center(area_matrix, local_water, -1, 0)
+        self.load_area_matrix_center(area_matrix, local_water, 1, 0)
+
+        self.load_area_matrix_quadrant(area_matrix, local_water, -1, -1)
+        self.load_area_matrix_quadrant(area_matrix, local_water, -1, 1)
+        self.load_area_matrix_quadrant(area_matrix, local_water, 1, -1)
+        self.load_area_matrix_quadrant(area_matrix, local_water, 1, 1)
+        
+        return area_matrix
+
+    def load_area_matrix_center(self, area_matrix, local_water, x_sign, y_sign):
+        edge_coord = area_matrix.size // 2
+        x = x_sign
+        y = y_sign
+        
+        while abs(x) <= edge_coord and abs(y) <= edge_coord:
+            if x == 0:
+                last_val = area_matrix.value_at(0, y - y_sign)
+                current_cell =  0 if local_water.value_at(0, y) else 1
+                area_matrix.set_at(0, y, last_val + current_cell)
+            else:
+                last_val = area_matrix.value_at(x - x_sign, 0)
+                current_cell = 0 if local_water.value_at(x, 0) else 1
+                area_matrix.set_at(x, 0, last_val + current_cell)
+
+            x = x + x_sign
+            y = y + y_sign
+
+    def load_area_matrix_quadrant(self, area_matrix, local_water, x_sign, y_sign):
+        edge_coord = area_matrix.size // 2
+        diag = 1
+    
+        while diag <= edge_coord:
+            self.load_area_matrix_quadrant_perimeter(area_matrix, local_water, diag, x_sign, y_sign)
+            diag += 1
+
+    def load_area_matrix_quadrant_perimeter(self, area_matrix, local_water, diag, sign_x, sign_y):
+        x = diag * sign_x
+        y = sign_y
+
+        while abs(y) < diag:
+            self.load_area_val(area_matrix, local_water, x, y, sign_x, sign_y)
+            y += sign_y
+
+
+        x = sign_x
+        y = diag * sign_y
+        while abs(x) < diag:
+            self.load_area_val(area_matrix, local_water, x, y, sign_x, sign_y)
+            x += sign_x
+
+        self.load_area_val(area_matrix, local_water, diag * sign_x, diag * sign_y, sign_x, sign_y)
+        
+
+    def load_area_val(self, area_matrix, local_water, x, y, sign_x, sign_y):
+        cell_val = 0 if local_water.value_at(x, y) else 1
+        horizontal = area_matrix.value_at(x - sign_x, y)
+        vertical = area_matrix.value_at(x, y - sign_y)
+        diagonal = area_matrix.value_at(x - sign_x, y - sign_y)
+        
+        area_matrix.set_at(x, y, cell_val + horizontal + vertical - diagonal)
 
     #UNUSED.  Could still be nice for debugging tho
     def ev_value(self, x, y, end_coord, user_matrix:Grid):
