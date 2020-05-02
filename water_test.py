@@ -73,7 +73,7 @@ def water_data_for(state, writer, map, description):
     metrics["water-area"] / total])
     
 
-with open('border_fix_metrics.csv', 'w', newline='') as results:
+with open('water_measure.csv', 'w', newline='') as results:
     writer = csv.writer(results)
     writer.writerow(["Terrain", 
     "Reported Anonymity",
