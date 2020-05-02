@@ -2,7 +2,7 @@ from .grid import Grid
 import random
 
 def draw_circle(grid:Grid):
-    size = random.randint(1, 7)
+    size = random.randint(1, 4)
     end_coord = grid.size // 2
     origin_x = random.randint(-end_coord + size, end_coord - size)
     origin_y = random.randint(-end_coord + size, end_coord - size)
@@ -45,7 +45,7 @@ def coast_map(size):
             grid.set_at(x, y, True)
 
     for y in range(-end_coord, end_coord + 1):
-        x_offset = random.triangular(-20, 20)
+        x_offset = round(random.triangular(-20, 20))
         if x_offset >= 0:
             for x in range(0, x_offset):
                 grid.set_at(x, y, False)
@@ -59,20 +59,20 @@ def coast_map(size):
 
 
 
-columns = 10
-rows = 10
-all_land_map = [[1]*(columns+1)]*(rows+1)
-pond_in_middle_map = [[1]*(columns+1)]*(rows+1)
-for a in range ((rows/2)-(rows/4),(rows/2)+(rows/4)):
-    for i in range (((columns/2)-(columns/4)+1),((columns/2)+(columns/4)+1)):
-        pond_in_middle_map [a][i] = 0
-river_in_middle_map = [[1]*(columns+1)]*(rows+1)
-for a in range ((rows/2)-1,(rows/2)+1):
-    river_in_middle_map[a]=0
+#columns = 10
+#rows = 10
+#all_land_map = [[1]*(columns+1)]*(rows+1)
+#pond_in_middle_map = [[1]*(columns+1)]*(rows+1)
+#for a in range ((rows/2)-(rows/4),(rows/2)+(rows/4)):
+#    for i in range (((columns/2)-(columns/4)+1),((columns/2)+(columns/4)+1)):
+#        pond_in_middle_map [a][i] = 0
+#river_in_middle_map = [[1]*(columns+1)]*(rows+1)
+#for a in range ((rows/2)-1,(rows/2)+1):
+#    river_in_middle_map[a]=0
 
-print(all_land_map)
-print(pond_in_middle_map)
-print(river_in_middle_map)
+#print(all_land_map)
+#print(pond_in_middle_map)
+#print(river_in_middle_map)
 
 # get visual representation of the maps https://stackoverflow.com/questions/43971138/python-plotting-colored-grid-based-on-values
 # get (x,y) coordinates https://stackoverflow.com/questions/9082829/creating-2d-coordinates-map-in-python

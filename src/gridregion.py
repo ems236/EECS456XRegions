@@ -34,6 +34,7 @@ class GridRegion:
         self.privacy = privacy
         self.distance_to_boundary = 0
         self.distance_likelihoods = 0
+        self.water_anonymity = 0
 
     @staticmethod
     def random_region(min_size, max_size):

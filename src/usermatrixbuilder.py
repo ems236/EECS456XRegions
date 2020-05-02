@@ -43,11 +43,15 @@ class UserMatrixBuilder:
 
         local_water = Grid(grid_size)
 
-        center_x = round(xcoord)
-        min_x = center_x - end_coord
+        #origin of world map is really this value because grids have a 0 center and world coords have it bottm left corner
+        world_water_offset = self.world_map.size // 2
 
-        center_y = round(ycoord)
-        min_y = center_y - end_coord
+        center_x = math.floor(xcoord)
+        min_x = center_x - end_coord - world_water_offset
+        
+        center_y = math.floor(ycoord)
+        min_y = center_y - end_coord - world_water_offset
+        
 
         for x in range(0, grid_size):
             for y in range(0, grid_size):

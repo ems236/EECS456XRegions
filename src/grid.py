@@ -16,7 +16,7 @@ class Grid:
 
     def set_at(self, x, y, val):
         if not (self.is_valid(x) and self.is_valid(y)):
-            raise ValueError("illegal dimension")
+            return
              
         self.data[self.convert_val(y)][self.convert_val(x)] = val
 

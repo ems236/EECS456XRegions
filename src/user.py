@@ -17,7 +17,7 @@ class User:
     def current_region(self):
         return self.x_region
 
-    def update_region(self):
+    def update_region(self, test_water = False):
         peers = self.world.peers(self)
         neigboring_regions = [peer.current_region() for peer in peers]
-        self.x_region = self.region_provider.region_for(self.xcoord, self.ycoord, self.profile, neigboring_regions)
+        self.x_region = self.region_provider.region_for(self.xcoord, self.ycoord, self.profile, neigboring_regions, use_water_stats=test_water)
